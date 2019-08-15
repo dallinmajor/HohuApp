@@ -129,6 +129,7 @@ const GlobalState = props => {
 
   function listenForMessages() {
     if (socket && user) {
+      socket.removeAllListeners(`${user._id}`);
       socket.on(`${user._id}`, data => {
         handleIncomingMessage(data);
       });
@@ -136,7 +137,7 @@ const GlobalState = props => {
   }
 
   function handleIncomingMessage(data) {
-    console.log(data);
+    console.log('this was hit');
     if (currentChatroom == data.chatroomId) {
       messageDispatch({
         type: Constants.ADD,

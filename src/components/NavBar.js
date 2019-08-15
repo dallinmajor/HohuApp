@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
+import { UnSeenMessageContext } from '../GlobalState';
+
 var NavBar = ({ setPageView }) => {
-  const { textStyle, NavBarRow } = styles;
+  const [unseenMessages, unseenMessageDispatch] = useContext(
+    UnSeenMessageContext
+  );
+
+  const { textStyle, NavBarRow, inboxNumber, inboxNumberText } = styles;
 
   return (
     <View style={NavBarRow}>
@@ -13,6 +19,11 @@ var NavBar = ({ setPageView }) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={e => setPageView('Messages')}>
         <Text>Messages</Text>
+        {unseenMessages > 0 ? (
+          <View style={inboxNumber}>
+            <Text style={inboxNumberText}>{unseenMessages}</Text>
+          </View>
+        ) : null}
       </TouchableOpacity>
     </View>
   );
@@ -41,6 +52,22 @@ const styles = {
     position: 'relative',
     flexDirection: 'row',
     justifyContent: 'space-around'
+  },
+
+  inboxNumber: {
+    backgroundColor: 'blue',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 65,
+    bottom: 10
+  },
+  inboxNumberText: {
+    fontSize: 12,
+    color: 'white'
   }
 };
 
