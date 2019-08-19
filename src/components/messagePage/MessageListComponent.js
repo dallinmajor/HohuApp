@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, Image } from 'react-native';
 
 const MessageListComponent = ({ chatroom }) => {
-  const { messageCompoentStyle, imageStyles, contactName } = styles;
+  const {
+    messageCompoentStyle,
+    imageStyles,
+    contactName,
+    contactNameBold
+  } = styles;
 
   return (
     <View style={messageCompoentStyle}>
       <Image style={imageStyles} source={{ uri: chatroom.agent.avatar }} />
-      <Text style={contactName}>{chatroom.agent.name}</Text>
+      <Text style={chatroom.unseenUser ? contactNameBold : contactName}>
+        {chatroom.agent.name}
+      </Text>
     </View>
   );
 };
@@ -38,6 +45,11 @@ const styles = {
   contactName: {
     fontSize: 18,
     paddingLeft: 10
+  },
+  contactNameBold: {
+    fontSize: 18,
+    paddingLeft: 10,
+    fontWeight: 'bold'
   }
 };
 

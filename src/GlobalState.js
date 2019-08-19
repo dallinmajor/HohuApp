@@ -32,13 +32,8 @@ const GlobalState = props => {
     listenForMessages();
   }, [user, socket, currentChatroom]);
 
-  useEffect(() => {
-    console.log('this is the currentChatroom', currentChatroom);
-  }, [currentChatroom]);
-
   async function initState() {
     let user = await API.User.getByUsername('dallinmajor');
-    console.log('This was hit', user);
     setUser(user);
     chatroomDispatch({ type: Constants.SET, payload: user.chatrooms });
   }
@@ -66,13 +61,14 @@ const GlobalState = props => {
     switch (action.type) {
       case Constants.SET:
         return _.keyBy(action.payload, '_id');
-
+      //This case might be unessiary
       case Constants.UNSEEN:
-        newState[action.chatroomId].unseen = true;
+        newState[action.chatroomId].unseenUser = true;
         return newState;
 
+      //This case might be unessiary
       case Constants.SEEN:
-        newState[action.chatroomId].unseen = false;
+        newState[action.chatroomId].unseenUser = false;
         return newState;
 
       default:
@@ -137,19 +133,14 @@ const GlobalState = props => {
   }
 
   function handleIncomingMessage(data) {
-    console.log('this was hit');
     if (currentChatroom == data.chatroomId) {
       messageDispatch({
         type: Constants.ADD,
         payload: [data.message]
       });
-    } else if (chatrooms[data.chatroomsId]) {
-      chatroomDispatch({
-        type: Constants.UNSEEN,
-        chatroomId: data.chatroomId
-      });
-      unseenMessageDispatch({ type: Constants.ADD });
     } else {
+      console.log(data.chatroomId);
+      API.Chatrooms.setUserUnseen(data.chatroomId, true);
       unseenMessageDispatch({ type: Constants.ADD });
     }
   }

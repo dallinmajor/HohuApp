@@ -5,7 +5,8 @@ import MessageModal from './MessageModal';
 import {
   UserContext,
   ChatroomsContext,
-  CurrentChatroomContext
+  CurrentChatroomContext,
+  UnSeenMessageContext
 } from '../../GlobalState';
 import API from '../../api';
 import _ from 'lodash';
@@ -15,6 +16,9 @@ const MessagePage = () => {
   const [user] = useContext(UserContext);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [chatrooms, chatroomDispatch] = useContext(ChatroomsContext);
+  const [unseenMessages, unseenMessageDispatch] = useContext(
+    UnSeenMessageContext
+  );
   const [currentChatroom, currentChatroomDispatch] = useContext(
     CurrentChatroomContext
   );
@@ -22,11 +26,11 @@ const MessagePage = () => {
 
   useEffect(() => {
     getChatrooms();
-  }, []);
+  }, [unseenMessages]);
 
   async function getChatrooms() {
     const data = await API.Chatrooms.getChatrooms(user._id);
-    chatroomDispatch({ type: 'set', payload: data });
+    chatroomDispatch({ type: constants.SET, payload: data });
   }
 
   function onChatroomPress(chatroom) {
@@ -34,9 +38,20 @@ const MessagePage = () => {
       type: constants.SET,
       payload: chatroom._id
     });
+
+    if (chatroom.unseenUser) {
+      API.Chatrooms.setUserUnseen(chatroom._id, false);
+      chatroomDispatch({
+        type: constants.SEEN,
+        chatroomId: chatroom._id
+      });
+      unseenMessageDispatch({
+        type: constants.SUBTRACT
+      });
+    }
+
     setContactId(chatroom.agent._id);
     setShowMessageModal(true);
-    console.log(currentChatroom);
   }
 
   return (
