@@ -34,10 +34,12 @@ const MessagePage = () => {
   }
 
   function onChatroomPress(chatroom) {
+    setContactId(chatroom.agent._id);
     currentChatroomDispatch({
       type: constants.SET,
       payload: chatroom._id
     });
+    setShowMessageModal(true);
 
     if (chatroom.unseenUser) {
       API.Chatrooms.setUserUnseen(chatroom._id, false);
@@ -49,9 +51,6 @@ const MessagePage = () => {
         type: constants.SUBTRACT
       });
     }
-
-    setContactId(chatroom.agent._id);
-    setShowMessageModal(true);
   }
 
   return (

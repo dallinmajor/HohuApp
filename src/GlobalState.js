@@ -30,12 +30,30 @@ const GlobalState = props => {
 
   useEffect(() => {
     listenForMessages();
-  }, [user, socket, currentChatroom]);
+  }, [user, socket, currentChatroom, chatrooms]);
 
   async function initState() {
     let user = await API.User.getByUsername('dallinmajor');
+    console.log(user.username, 'user');
     setUser(user);
     chatroomDispatch({ type: Constants.SET, payload: user.chatrooms });
+    setUnseenMessages(user.chatrooms);
+  }
+
+  function setUnseenMessages(data) {
+    const newMessages = data.reduce((acc, chatroom) => {
+      if (chatroom.unseenUser) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+
+    console.log(newMessages, 'new Messages');
+
+    unseenMessageDispatch({
+      type: Constants.SET,
+      payload: newMessages
+    });
   }
 
   //********* REDUCERS ***********
@@ -91,6 +109,8 @@ const GlobalState = props => {
 
   function unseenReducer(state, action) {
     switch (action.type) {
+      case Constants.SET:
+        return action.payload;
       case Constants.ADD:
         return state + 1;
 
@@ -138,9 +158,12 @@ const GlobalState = props => {
         type: Constants.ADD,
         payload: [data.message]
       });
+    } else if (chatrooms[data.chatroomId]) {
+      if (!chatrooms[data.chatroomId].unseenUser) {
+        API.Chatrooms.setUserUnseen(data.chatroomId, true);
+        unseenMessageDispatch({ type: Constants.ADD });
+      }
     } else {
-      console.log(data.chatroomId);
-      API.Chatrooms.setUserUnseen(data.chatroomId, true);
       unseenMessageDispatch({ type: Constants.ADD });
     }
   }

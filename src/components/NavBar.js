@@ -7,17 +7,29 @@ var NavBar = ({ setPageView }) => {
     UnSeenMessageContext
   );
 
-  const { textStyle, NavBarRow, inboxNumber, inboxNumberText } = styles;
+  const {
+    textStyle,
+    NavBarRow,
+    inboxNumber,
+    inboxNumberText,
+    touchZones
+  } = styles;
 
   return (
     <View style={NavBarRow}>
-      <TouchableOpacity onPress={e => setPageView('Profile')}>
+      <TouchableOpacity
+        onPress={e => setPageView('Profile')}
+        style={touchZones}
+      >
         <Text>Profile</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={e => setPageView('Home')}>
+      <TouchableOpacity onPress={e => setPageView('Home')} style={touchZones}>
         <Text>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={e => setPageView('Messages')}>
+      <TouchableOpacity
+        onPress={e => setPageView('Messages')}
+        style={touchZones}
+      >
         <Text>Messages</Text>
         {unseenMessages > 0 ? (
           <View style={inboxNumber}>
@@ -37,11 +49,10 @@ const styles = {
   },
 
   NavBarRow: {
-    backgroundColor: '#00ffef',
+    backgroundColor: '#ddd',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100,
-    paddingTop: 25,
+    height: 80,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -55,7 +66,7 @@ const styles = {
   },
 
   inboxNumber: {
-    backgroundColor: 'blue',
+    backgroundColor: 'black',
     width: 18,
     height: 18,
     borderRadius: 9,
@@ -63,11 +74,16 @@ const styles = {
     justifyContent: 'center',
     position: 'absolute',
     left: 65,
-    bottom: 10
+    bottom: 20
   },
   inboxNumberText: {
     fontSize: 12,
     color: 'white'
+  },
+
+  touchZones: {
+    paddingTop: 30,
+    height: 60
   }
 };
 
